@@ -1,0 +1,19 @@
+[project]
+name = "agentic-soc"
+version = "0.1.0"
+description = "Autonomous Multi-Tier Agentic AI Security Operations Center (Agentic SOC)"
+authors = [
+    { name = "Ken Huang", email = "kenhuangus@users.noreply.github.com" }
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic>=2.0",
+]
+
+[project.scripts]
+agentic-soc = "agentic_soc.cli:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
