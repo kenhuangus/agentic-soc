@@ -32,6 +32,12 @@ class SOCSupervisor(SOCAgent):
                 action.approver = "SOC_POLICY_AUTOMATION"
                 self.logger.info(f"Auto-approved low-risk action {action.action_id} ({action.action_type} on {action.target_entity})")
                 self.soar_gateway.execute_action(action)
+                self.record_tool_call(
+                    tool_name=action.action_type,
+                    arguments={"target_entity": action.target_entity, "target_type": action.target_type},
+                    result=action.execution_result,
+                    status="success" if action.executed else "error"
+                )
                 executed_actions.append(action)
 
             # Policy Rule 2: High/Critical Severity Actions Requiring Dual-Key HITL
@@ -41,10 +47,22 @@ class SOCSupervisor(SOCAgent):
                     action.approver = human_approver or "HUMAN_SOC_LEAD"
                     self.logger.warning(f"Dual-key authorization GRANTED by {action.approver} for action {action.action_id} ({action.action_type} on {action.target_entity})")
                     self.soar_gateway.execute_action(action)
+                    self.record_tool_call(
+                        tool_name=action.action_type,
+                        arguments={"target_entity": action.target_entity, "target_type": action.target_type, "approver": action.approver},
+                        result=action.execution_result,
+                        status="success" if action.executed else "error"
+                    )
                     executed_actions.append(action)
                 else:
                     action.approval_status = ApprovalStatus.PENDING
                     self.logger.warning(f"ACTION PAUSED: Action {action.action_id} ({action.action_type} on {action.target_entity}) REQUIRES HUMAN APPROVAL.")
+                    self.record_tool_call(
+                        tool_name=action.action_type,
+                        arguments={"target_entity": action.target_entity, "target_type": action.target_type},
+                        result="Paused: Requires Human-In-The-Loop Approval",
+                        status="blocked"
+                    )
 
         # Update dossier status
         all_executed = all(a.executed for a in dossier.containment_actions)

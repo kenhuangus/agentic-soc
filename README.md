@@ -59,6 +59,18 @@ The system establishes a four-tier agent hierarchy with strict Human-in-the-Loop
 
 ---
 
+## 3. Security Hardening & Evaluation Guardrails
+
+The engine integrates runtime defenses against prompt injection, canary leakage, and judge evaluation blindness:
+
+1. **Canary Token Defense**: Generates high-entropy canary secrets (`CANARY_SEC_...`) embedded directly into the agent system prompt. Runtime monitors inspect all outputs for canary leakage (`ASI03:system_canary_leaked`).
+2. **Tool-Call Serialization**: Every tool invocation (`host_isolation`, `firewall_block_ip`, `credential_revocation`, `process_kill`) is recorded with timestamp, arguments, execution status, and cryptographic audit hash in the agent transcript, ensuring security evaluators have full visibility into tool attack vectors.
+3. **Prompt Injection Neutralization**: Inbound untrusted telemetry is bounded to 4,000 characters and isolated within `<UNTRUSTED_TELEMETRY_DATA_BOUNDARY>` blocks to neutralize jailbreaks.
+4. **Refusal Scaling & Indicator Deduplication**: Prevents false-positive data-leak indicators when agents output security refusal messages and deduplicates security indicators.
+5. **Synthetic Testing Data Generator**: Features `SyntheticTelemetryGenerator` to generate hundreds of randomized background events and multi-stage attack scenarios for property-based evaluation.
+
+---
+
 ## 3. Installation & Setup
 
 ### Prerequisites
