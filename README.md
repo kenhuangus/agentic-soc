@@ -71,7 +71,7 @@ The engine integrates runtime defenses against prompt injection, canary leakage,
 
 ---
 
-## 3. Installation & Setup
+## 4. Installation & Setup
 
 ### Prerequisites
 - Python 3.10+
@@ -86,7 +86,7 @@ pip install -e .
 
 ---
 
-## 4. Verification & Testing
+## 5. Verification & Testing
 
 Execute the automated test suite covering all four tiers, OCSF models, baseline evaluation, and end-to-end containment:
 
@@ -96,7 +96,7 @@ python -m pytest tests/ -v
 
 ---
 
-## 5. Command-Line Simulation Scenarios
+## 6. Command-Line Simulation Scenarios
 
 ### Scenario A: Routine Admin Maintenance (False Positive Auto-Resolution)
 Demonstrates Tier 1 evaluating an alert against standard baselines and auto-resolving without paging analysts:
